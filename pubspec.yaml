@@ -1,7 +1,7 @@
 name: clubhouse_clone
-description: A new Flutter project.
+description: A new Flutter project to create a Clubhouse clone using 100ms.
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -12,6 +12,13 @@ dependencies:
   flutter:
     sdk: flutter
   hmssdk_flutter: ^0.4.0
+  http: ^0.13.4
+  uuid: ^3.0.5
+  mobx: ^2.0.5
+  flutter_mobx: ^2.0.2
+  provider: ^6.0.1
+  permission_handler: ^8.3.0
+  google_fonts: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -19,5 +26,4 @@ dev_dependencies:
   flutter_lints: ^1.0.0
 
 flutter:
-
   uses-material-design: true
