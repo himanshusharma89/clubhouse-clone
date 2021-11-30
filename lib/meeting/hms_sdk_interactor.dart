@@ -33,14 +33,6 @@ class HMSSDKInteractor {
     return await _meeting.sendMessage(message);
   }
 
-  Future<void> sendDirectMessage(String message, String peerId) async {
-    return await _meeting.sendDirectMessage(message, peerId);
-  }
-
-  Future<void> sendGroupMessage(String message, String roleName) async {
-    return await _meeting.sendGroupMessage(message, roleName);
-  }
-
   void addMeetingListener(HMSUpdateListener listener) {
     _meeting.addMeetingListener(listener);
   }
@@ -61,7 +53,7 @@ class HMSSDKInteractor {
   void changeRole(
       {required String peerId,
       required String roleName,
-      bool forceChange = false}) {
+      bool forceChange = true}) {
     _meeting.changeRole(
         peerId: peerId, roleName: roleName, forceChange: forceChange);
   }

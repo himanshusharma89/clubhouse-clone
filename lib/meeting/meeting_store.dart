@@ -138,14 +138,6 @@ abstract class MeetingStoreBase
     await meetingController.sendMessage(message);
   }
 
-  Future<void> sendDirectMessage(String message, String peerId) async {
-    await meetingController.sendDirectMessage(message, peerId);
-  }
-
-  Future<void> sendGroupMessage(String message, String roleName) async {
-    await meetingController.sendGroupMessage(message, roleName);
-  }
-
   @action
   void updateError(HMSError error) {
     this.error = error;
@@ -192,14 +184,14 @@ abstract class MeetingStoreBase
         if (each.isLocal) {
           localPeer = each;
           debugPrint('on join ${localPeer!.name}  ${localPeer!.peerId}');
-          if (each.audioTrack != null) {
-            trackStatus[each.audioTrack!.trackId] = HMSTrackUpdate.trackMuted;
-            tracks.insert(0, each.audioTrack!);
+          if (each.videoTrack != null) {
+            trackStatus[each.videoTrack!.trackId] = HMSTrackUpdate.trackMuted;
+            tracks.insert(0, each.videoTrack!);
           }
         } else {
-          if (each.audioTrack != null) {
-            trackStatus[each.audioTrack!.trackId] = HMSTrackUpdate.trackMuted;
-            tracks.insert(0, each.audioTrack!);
+          if (each.videoTrack != null) {
+            trackStatus[each.videoTrack!.trackId] = HMSTrackUpdate.trackMuted;
+            tracks.insert(0, each.videoTrack!);
           }
         }
       }
@@ -333,9 +325,7 @@ abstract class MeetingStoreBase
 
   void changeTracks() {
     debugPrint("flutteronChangeTracks $trackChange");
-    if (trackChange == 1) {
-      // toggleVideo();
-    } else if (trackChange == 0) {
+    if (trackChange == 0) {
       toggleAudio();
     }
   }
@@ -357,10 +347,6 @@ abstract class MeetingStoreBase
   Future<List<HMSRole>> getRoles() async {
     return meetingController.getRoles();
   }
-
-  // void changeTrackRequest(String peerId, bool mute, bool isVideoTrack) {
-  //   return meetingController.changeTrackRequest(peerId, mute, isVideoTrack);
-  // }
 
   @action
   void peerOperation(HMSPeer peer, HMSPeerUpdate update) {

@@ -2,6 +2,7 @@ import 'package:clubhouse_clone/enum/meeting_flow.dart';
 import 'package:clubhouse_clone/meeting/meeting_controller.dart';
 import 'package:clubhouse_clone/meeting/meeting_store.dart';
 import 'package:clubhouse_clone/models/user.dart';
+import 'package:clubhouse_clone/views/chat_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,6 +26,7 @@ class RoomView extends StatefulWidget {
 
 class _RoomViewState extends State<RoomView> {
   late MeetingStore _meetingStore;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -35,7 +37,6 @@ class _RoomViewState extends State<RoomView> {
     _meetingStore.meetingController = meetingController;
 
     initMeeting();
-    // checkButtons();
   }
 
   initMeeting() async {
@@ -44,16 +45,17 @@ class _RoomViewState extends State<RoomView> {
       Navigator.of(context).pop();
     }
     _meetingStore.startListen();
-  }
-
-  void checkButtons() async {
-    _meetingStore.isMicOn =
-        !(await _meetingStore.meetingController.isAudioMute(null));
+    if (widget.user.userRole == 'listener') {
+      if (_meetingStore.isMicOn) {
+        _meetingStore.toggleAudio();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.amberAccent.shade100,
       appBar: AppBar(
         leading: GestureDetector(
@@ -83,104 +85,41 @@ class _RoomViewState extends State<RoomView> {
             Expanded(
               child: Observer(builder: (context) {
                 if (!_meetingStore.isMeetingStarted) return const SizedBox();
-                debugPrint("FilteredMEETING" + _meetingStore.peers.toString());
                 if (_meetingStore.peers.isEmpty) {
                   return const Center(
                       child: Text('Waiting for other to join!'));
                 }
                 final filteredList = _meetingStore.peers;
-                debugPrint("FILTERED LIST " + filteredList.toString());
                 return GridView.builder(
                     itemCount: filteredList.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (_) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          // _meetingStore
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: const [
-                                            Icon(Icons.mic, size: 40),
-                                            Text("Mute")
-                                          ],
-                                        ),
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          GestureDetector(
-                                              onTap: () {
-                                                _meetingStore.changeRole(
-                                                    peerId: filteredList[index]
-                                                        .peerId,
-                                                    roleName: 'listener');
-                                              },
-                                              child: const Icon(Icons.mic,
-                                                  size: 40)),
-                                          const Text("Make Listener")
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          GestureDetector(
-                                              onTap: () {
-                                                _meetingStore.changeRole(
-                                                    peerId: filteredList[index]
-                                                        .peerId,
-                                                    roleName: 'speaker');
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Icon(Icons.mic,
-                                                  size: 40)),
-                                          const Text("Make Speaker")
-                                        ],
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          _meetingStore
-                                              .removePeer(filteredList[index]);
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: const [
-                                            Icon(Icons.mic, size: 40),
-                                            Text("Remove")
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              });
+                        onLongPress: () {
+                          _meetingStore.removePeer(filteredList[index]);
                         },
-                        child: CircleAvatar(
-                          radius: 30,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(filteredList[index].name),
-                              Text(filteredList[index].role!.name),
-                            ],
+                        onTap: () {
+                          _meetingStore.changeRole(
+                              peerId: filteredList[index].peerId,
+                              roleName: 'speaker');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CircleAvatar(
+                            radius: 25,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(filteredList[index].name),
+                                Text(filteredList[index].role!.name),
+                              ],
+                            ),
                           ),
                         ),
                       );
                     },
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4));
+                            crossAxisCount: 3));
               }),
             ),
             Row(
@@ -201,23 +140,25 @@ class _RoomViewState extends State<RoomView> {
                       style: TextStyle(color: Colors.redAccent),
                     )),
                 const Spacer(),
+                Observer(builder: (context) {
+                  return OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade300,
+                          padding: EdgeInsets.zero,
+                          shape: const CircleBorder()),
+                      onPressed: () {
+                        _meetingStore.toggleAudio();
+                      },
+                      child: Icon(
+                          _meetingStore.isMicOn ? Icons.mic : Icons.mic_off));
+                }),
                 OutlinedButton(
                     style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.grey.shade300,
                         padding: EdgeInsets.zero,
                         shape: const CircleBorder()),
                     onPressed: () {
-                      _meetingStore.toggleAudio();
-                    },
-                    child: Icon(
-                        _meetingStore.isMicOn ? Icons.mic : Icons.mic_off)),
-                OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade300,
-                        padding: EdgeInsets.zero,
-                        shape: const CircleBorder()),
-                    onPressed: () {
-                      _meetingStore.toggleAudio();
+                      _scaffoldKey.currentState!.openEndDrawer();
                     },
                     child: const Icon(Icons.chat))
               ],
@@ -225,6 +166,7 @@ class _RoomViewState extends State<RoomView> {
           ],
         ),
       ),
+      endDrawer: ChatWidget(meetingStore: _meetingStore),
     );
   }
 }

@@ -15,8 +15,8 @@ class MeetingController {
       : _hmsSdkInteractor = HMSSDKInteractor();
 
   Future<bool> joinMeeting() async {
-    String? token =
-        await TokenService.getToken(userId: user.userName, roomId: roomUrl);
+    String? token = await TokenService.getToken(
+        userId: user.userName, roomId: roomUrl, role: user.userRole);
     if (token == null) return false;
 
     HMSConfig config = HMSConfig(
@@ -40,14 +40,6 @@ class MeetingController {
 
   Future<void> sendMessage(String message) async {
     return await _hmsSdkInteractor?.sendMessage(message);
-  }
-
-  Future<void> sendDirectMessage(String message, String peerId) async {
-    return await _hmsSdkInteractor?.sendDirectMessage(message, peerId);
-  }
-
-  Future<void> sendGroupMessage(String message, String roleName) async {
-    return await _hmsSdkInteractor?.sendGroupMessage(message, roleName);
   }
 
   void addMeetingListener(HMSUpdateListener listener) {

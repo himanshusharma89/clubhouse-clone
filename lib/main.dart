@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Clubhouse Clone',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             textTheme: GoogleFonts.nunitoTextTheme(Theme.of(context).textTheme),
             primarySwatch: Colors.blue,

@@ -19,6 +19,7 @@ dependencies:
   provider: ^6.0.1
   permission_handler: ^8.3.0
   google_fonts: ^2.1.0
+  intl: 
 
 dev_dependencies:
   flutter_test:

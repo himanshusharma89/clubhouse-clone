@@ -111,7 +111,10 @@ class _UserDetailsInputViewState extends State<UserDetailsInputView> {
                         onPressed: () {
                           User user = User(
                               userName: usernameTextEditingController.text,
-                              userRole: userRoleTextEditingController.text,
+                              userRole:
+                                  userRoleTextEditingController.text.isEmpty
+                                      ? 'listener'
+                                      : userRoleTextEditingController.text,
                               userId: const Uuid().v1());
                           const roomId = '618d48acbe6c3c0b351510e0';
                           Navigator.push(
