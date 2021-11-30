@@ -1,27 +1,19 @@
-import 'package:clubhouse_clone/meeting/meeting_store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:hmssdk_flutter/hmssdk_flutter.dart';
-import 'package:intl/intl.dart';
 
 class ChatView extends StatefulWidget {
-  final MeetingStore meetingStore;
-
-  const ChatView({required this.meetingStore, Key? key}) : super(key: key);
+  const ChatView({Key? key}) : super(key: key);
 
   @override
   _ChatViewState createState() => _ChatViewState();
 }
 
 class _ChatViewState extends State<ChatView> {
-  late MeetingStore _meetingStore;
   TextEditingController messageTextController = TextEditingController();
   String valueChoose = "Everyone";
 
   @override
   void initState() {
     super.initState();
-    _meetingStore = widget.meetingStore;
   }
 
   @override
@@ -50,74 +42,7 @@ class _ChatViewState extends State<ChatView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                // child: const Text('No messages')
-                child: Observer(
-                  builder: (_) {
-                    if (!_meetingStore.isMeetingStarted) {
-                      return const SizedBox();
-                    }
-                    if (_meetingStore.messages.isEmpty) {
-                      return const Text('No messages');
-                    }
-                    return ListView(
-                      children: List.generate(
-                        _meetingStore.messages.length,
-                        (index) => Container(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      _meetingStore
-                                              .messages[index].sender?.name ??
-                                          "",
-                                      style: const TextStyle(
-                                          fontSize: 10.0,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  ),
-                                  Text(
-                                    _meetingStore.messages[index].time
-                                        .toString(),
-                                    style: const TextStyle(
-                                        fontSize: 10.0,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w900),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              Text(
-                                _meetingStore.messages[index].message
-                                    .toString(),
-                                style: const TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ],
-                          ),
-                          decoration: const BoxDecoration(
-                              border: Border(
-                            left: BorderSide(
-                              color: Colors.blue,
-                              width: 5,
-                            ),
-                          )),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              const Expanded(child: Text('No messages')),
               Container(
                 color: Colors.grey.shade300,
                 margin: const EdgeInsets.only(top: 10.0),
@@ -140,30 +65,7 @@ class _ChatViewState extends State<ChatView> {
                     ),
                     const SizedBox(width: 15),
                     GestureDetector(
-                      onTap: () {
-                        String message = messageTextController.text;
-                        if (message.isEmpty) return;
-
-                        DateTime currentTime = DateTime.now();
-                        final DateFormat formatter =
-                            DateFormat('yyyy-MM-dd hh:mm a');
-
-                        if (valueChoose == "Everyone") {
-                          _meetingStore.sendMessage(message);
-                          _meetingStore.addMessage(HMSMessage(
-                            sender: _meetingStore.localPeer!,
-                            message: message,
-                            type: "chat",
-                            time: formatter.format(currentTime),
-                            hmsMessageRecipient: HMSMessageRecipient(
-                                recipientPeer: null,
-                                recipientRoles: null,
-                                hmsMessageRecipientType:
-                                    HMSMessageRecipientType.BROADCAST),
-                          ));
-                        }
-                        messageTextController.clear();
-                      },
+                      onTap: () {},
                       child: const Icon(
                         Icons.send,
                         size: 40.0,

@@ -11,15 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  hmssdk_flutter: ^0.4.0
-  http: ^0.13.4
-  uuid: ^3.0.5
-  mobx: ^2.0.5
-  flutter_mobx: ^2.0.2
-  provider: ^6.0.1
   permission_handler: ^8.3.0
   google_fonts: ^2.1.0
-  intl: 
 
 dev_dependencies:
   flutter_test:
