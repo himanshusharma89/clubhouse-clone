@@ -83,6 +83,7 @@ class _RoomViewState extends State<RoomView> {
               height: 30,
             ),
             Expanded(
+              // child: Center(child: const Text('Waiting for other to join!'))
               child: Observer(builder: (context) {
                 if (!_meetingStore.isMeetingStarted) return const SizedBox();
                 if (_meetingStore.peers.isEmpty) {
@@ -97,11 +98,6 @@ class _RoomViewState extends State<RoomView> {
                         onLongPress: () {
                           _meetingStore.removePeer(filteredList[index]);
                         },
-                        onTap: () {
-                          _meetingStore.changeRole(
-                              peerId: filteredList[index].peerId,
-                              roleName: 'speaker');
-                        },
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: CircleAvatar(
@@ -109,8 +105,14 @@ class _RoomViewState extends State<RoomView> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(filteredList[index].name),
-                                Text(filteredList[index].role!.name),
+                                Text(
+                                  filteredList[index].name,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                Text(
+                                  filteredList[index].role!.name,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
                               ],
                             ),
                           ),
@@ -166,7 +168,7 @@ class _RoomViewState extends State<RoomView> {
           ],
         ),
       ),
-      endDrawer: ChatWidget(meetingStore: _meetingStore),
+      endDrawer: ChatView(meetingStore: _meetingStore),
     );
   }
 }

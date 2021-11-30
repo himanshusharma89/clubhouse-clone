@@ -4,19 +4,17 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 import 'package:intl/intl.dart';
 
-class ChatWidget extends StatefulWidget {
+class ChatView extends StatefulWidget {
   final MeetingStore meetingStore;
 
-  const ChatWidget({required this.meetingStore, Key? key}) : super(key: key);
+  const ChatView({required this.meetingStore, Key? key}) : super(key: key);
 
   @override
-  _ChatWidgetState createState() => _ChatWidgetState();
+  _ChatViewState createState() => _ChatViewState();
 }
 
-class _ChatWidgetState extends State<ChatWidget> {
+class _ChatViewState extends State<ChatView> {
   late MeetingStore _meetingStore;
-  late double widthOfScreen;
-  late List<HMSRole> hmsRoles;
   TextEditingController messageTextController = TextEditingController();
   String valueChoose = "Everyone";
 
@@ -24,16 +22,10 @@ class _ChatWidgetState extends State<ChatWidget> {
   void initState() {
     super.initState();
     _meetingStore = widget.meetingStore;
-    getRoles();
-  }
-
-  void getRoles() async {
-    hmsRoles = await _meetingStore.getRoles();
   }
 
   @override
   Widget build(BuildContext context) {
-    widthOfScreen = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -59,6 +51,7 @@ class _ChatWidgetState extends State<ChatWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
+                // child: const Text('No messages')
                 child: Observer(
                   builder: (_) {
                     if (!_meetingStore.isMeetingStarted) {
@@ -155,10 +148,6 @@ class _ChatWidgetState extends State<ChatWidget> {
                         final DateFormat formatter =
                             DateFormat('yyyy-MM-dd hh:mm a');
 
-                        List<String> rolesName = <String>[];
-                        for (int i = 0; i < hmsRoles.length; i++) {
-                          rolesName.add(hmsRoles[i].name);
-                        }
                         if (valueChoose == "Everyone") {
                           _meetingStore.sendMessage(message);
                           _meetingStore.addMessage(HMSMessage(

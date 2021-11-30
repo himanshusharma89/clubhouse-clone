@@ -38,6 +38,8 @@ class _UserDetailsInputViewState extends State<UserDetailsInputView> {
   @override
   void dispose() {
     usernameTextEditingController.removeListener(getUserNameInitial);
+    usernameTextEditingController.clear();
+    userRoleTextEditingController.clear();
     usernameTextEditingController.dispose();
     userRoleTextEditingController.dispose();
     super.dispose();
@@ -117,6 +119,7 @@ class _UserDetailsInputViewState extends State<UserDetailsInputView> {
                                       : userRoleTextEditingController.text,
                               userId: const Uuid().v1());
                           const roomId = '618d48acbe6c3c0b351510e0';
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(
