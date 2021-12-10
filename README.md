@@ -1,6 +1,8 @@
 # clubhouse_clone
 
-A new Flutter project.
+A new Flutter project whee you use 100ms to create a minimal Clubhouse Clone
+
+![Final App](final%20app.gif)
 
 ## Getting Started
 
